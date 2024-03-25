@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename ='styles.css')}}">
+    <title>Home</title>
+</head>
+<body>
+    <h2>Welcome, {{ user.username }}!</h2>
+    <h3>Journal Entries</h3>
+    <form action="/journal" method="post">
+        <textarea name="content" placeholder="Write about your day..." required></textarea><br>
+        <button type="submit">Add Entry</button>
+    </form>
+    <ul>
+        {% for entry in journal_entries %}
+            <li>{{ entry.date }}: {{ entry.content }}</li>
+        {% endfor %}
+    </ul>
+    <h3>Goals</h3>
+    <form id="addGoalForm" action="/goals" method="post">
+        <input type="text" name="title" placeholder="Title" required><br>
+        <textarea name="description" placeholder="Description"></textarea><br>
+        <button type="submit">Add Goal</button>
+    </form>
+    <ul id="goalsList">
+        {% for goal in goals %}
+            <li id="goal_{{ goal.id }}">
+                {{ goal.title }} - {{ 'Completed' if goal.completed else 'Pending' }}
+                <button onclick="updateGoal('{{ goal.id }}')">Update</button>
+                <button onclick="deleteGoal('{{ goal.id }}')">Delete</button>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="/logout">Logout</a>
+
+    <!-- JavaScript for handling delete and update actions -->
+    <script>
+        function deleteGoal(goalId) {
+            fetch('/goals/' + goalId, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('goal_' + goalId).remove();
+                } else {
+                    alert('Failed to delete goal');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the goal');
+            });
+        }
+
+        function updateGoal(goalId) {
+            const newTitle = prompt('Enter the new title:');
+            const newDescription = prompt('Enter the new description:');
+            const completed = confirm('Is the goal completed?');
+
+            fetch('/goals/' + goalId, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: newTitle,
+                    description: newDescription,
+                    completed: completed
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Goal updated successfully');
+                    location.reload(); // Refresh the page to reflect the changes
+                } else {
+                    alert('Failed to update goal');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the goal');
+            });
+        }
+    </script>
+</body>
+</html>
