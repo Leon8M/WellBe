@@ -3,40 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='top.png') }}">
     <link rel="stylesheet" href="{{url_for('static', filename ='styles.css')}}">
     <title>Home</title>
 </head>
 <body>
+    <header>
+        <div class="top">
+            <img src="{{url_for('static', filename ='logo.png')}}" alt="" id="logo">
+            <button class="about" onclick="openTab(event, 'About')">About</button>
+        </div>
+    </header>
     <h2>Welcome, {{ user.username }}!</h2>
-    <h3>Journal Entries</h3>
-    <form action="/journal" method="post">
-        <textarea name="content" placeholder="Write about your day..." required></textarea><br>
-        <button type="submit">Add Entry</button>
-    </form>
-    <ul>
-        {% for entry in journal_entries %}
-            <li>{{ entry.date }}: {{ entry.content }}</li>
-        {% endfor %}
-    </ul>
-    <h3>Goals</h3>
-    <form id="addGoalForm" action="/goals" method="post">
-        <input type="text" name="title" placeholder="Title" required><br>
-        <textarea name="description" placeholder="Description"></textarea><br>
-        <button type="submit">Add Goal</button>
-    </form>
-    <ul id="goalsList">
-        {% for goal in goals %}
-            <li id="goal_{{ goal.id }}">
-                {{ goal.title }} - {{ 'Completed' if goal.completed else 'Pending' }}
-                <button onclick="updateGoal('{{ goal.id }}')">Update</button>
-                <button onclick="deleteGoal('{{ goal.id }}')">Delete</button>
-            </li>
-        {% endfor %}
-    </ul>
+
+    <div class="tab-container">
+        <div class="tabs">
+            <button class="tab-button" onclick="openTab(event, 'Journal')">Journal</button>
+            <button class="tab-button" onclick="openTab(event, 'Goals')">Goals</button>
+        </div>
+
+        <div id="Journal" class="tab-content">
+            <h3>Journal Entries</h3>
+            <form action="/journal" method="post">
+                <textarea name="content" placeholder="Write about your day..." required></textarea><br>
+                <button type="submit">Add Entry</button>
+            </form>
+            <ul>
+                {% for entry in journal_entries %}
+                    <li>{{ entry.date }}: {{ entry.content }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div id="Goals" class="tab-content" style="display:none">
+            <h3>Goals</h3>
+            <form id="addGoalForm" action="/goals" method="post">
+                <input type="text" name="title" placeholder="Title" required><br>
+                <textarea name="description" placeholder="Description"></textarea><br>
+                <button type="submit">Add Goal</button>
+            </form>
+            <ul id="goalsList">
+                {% for goal in goals %}
+                    <li id="goal_{{ goal.id }}" title="{{ goal.description}}">
+                        {{ goal.title }} - {{ 'Completed' if goal.completed else 'Pending' }}
+                        <button onclick="updateGoal('{{ goal.id }}')">Update</button>
+                        <button onclick="deleteGoal('{{ goal.id }}')">Delete</button>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="About" class="tab-content">
+            <h3>Welcome to WellBe!</h3>
+            <p> 
+                WellBe is a simple practice app designed for users to manage their journal entries and goals efficiently. 
+                Created as a development exercise, this app allows users to log in or register, jot down daily thoughts, 
+                and set or track personal goals. Whether you're reflecting on your day or planning future achievements, 
+                Journal Goals provides a straightforward and user-friendly platform to keep everything organized. 
+                Enjoy the simplicity and functionality of this practice app as you manage your thoughts and ambitions in one place.
+            </p>
+
+        </div>
+    </div>
+
     <a href="/logout">Logout</a>
 
-    <!-- JavaScript for handling delete and update actions -->
+    <!-- JavaScript for handling tabs and goal actions -->
     <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tabbuttons;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) {
+                tabbuttons[i].className = tabbuttons[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
         function deleteGoal(goalId) {
             fetch('/goals/' + goalId, {
                 method: 'DELETE'
@@ -83,6 +129,11 @@
                 alert('An error occurred while updating the goal');
             });
         }
+
+        // Open the first tab by default
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector(".tab-button").click();
+        });
     </script>
 </body>
 </html>

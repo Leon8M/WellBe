@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Solway:wght@300;400;500;700;800&display=swap');
 /* Global Styles */
 body {
-    font-family: "Lobster Two", sans-serif;
+    font-family: "Solway", serif;
     font-weight: 400;
     font-style: normal;
     background-color: rgba(255, 255, 255, 0.8); 
@@ -16,6 +16,43 @@ body {
     display: flex;
     flex-direction: column;
 }
+header {
+    position: fixed; /* Keeps the header fixed at the top of the page */
+    top: 0;
+    width: 100%; /* Make the header span the full width of the viewport */
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Center align items vertically */
+    padding: 5px 10px; /* Add some padding for better spacing */
+    background-color: rgba(255, 255, 255, 0.8); /* Background color for better visibility */
+    margin-bottom: 5px;
+}
+
+#logo {
+    width: 48px;
+    margin-left: 10px;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+button.about {
+    color: black; /* White text */
+    background-color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button.about:hover {
+    color: rgba(0, 0, 0, 0.2); /* Darker shade of primary blue color */
+}
 
 a {
     color: #000; 
@@ -28,6 +65,43 @@ a:hover {
 
 h2, h3 {
     margin-bottom: 10px;
+}
+
+/* Tab Styles */
+.tab-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 1px solid #000;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tab-button:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.tab-button.active {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.tab-content {
+    display: none;
+    border: 1px solid #000;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
 }
 
 /* Form Styles */
@@ -84,7 +158,6 @@ ul {
 p {
     margin-bottom: 10px;
 }
-
 
 /* Media query for small devices */
 @media only screen and (max-width: 600px) {
